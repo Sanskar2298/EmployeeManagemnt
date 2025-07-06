@@ -1,12 +1,46 @@
-# React + Vite
+ 🧑‍💼 Employee Management System
+A full-stack Employee Management System that allows admins to manage employees and their tasks efficiently. Employees can track, accept, and update the status of their assigned tasks. Built with modern web technologies ensuring a clean UI, robust backend, and smooth user experience.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+🔧 Frontend
+React.js – UI library for building interactive interfaces.
+Tailwind CSS – Utility-first CSS framework for styling.
+React Router – Client-side routing for SPA navigation.
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+⚙️ Backend
+Node.js – JavaScript runtime for building fast and scalable server-side applications.
+Express.js – Web framework for API routing and middleware handling.
+JWT (JSON Web Token) – For secure authentication and role-based access.
 
-## Expanding the ESLint configuration
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+DataBase
+MongoDB – NoSQL database to store users, employees, and task data.
+Mongoose – ODM for MongoDB to define schemas and interact with the database.
+
+
+🧩 Core Features
+👨‍💼 Admin Panel
+Signup/Login with role-based access control.
+
+View all registered employees.
+
+Create and assign new tasks to employees.
+
+Track task status (New, Accepted, Completed, Failed) per employee.
+
+View task statistics.
+
+👷 Employee Panel
+Signup/Login as employee.
+
+View personal dashboard with assigned tasks.
+
+Accept or reject tasks.
+
+Mark tasks as completed or failed.
+
+View task stats (how many completed, new, failed, etc.).
+
+
+
+
