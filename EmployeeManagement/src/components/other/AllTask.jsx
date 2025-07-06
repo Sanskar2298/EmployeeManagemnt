@@ -1,7 +1,7 @@
 import React from 'react';
 
 const AllTask = ({ tasks }) => {
-  // Build task stats grouped by employee
+  
   const statsByEmployee = {};
 
   tasks.forEach((task) => {

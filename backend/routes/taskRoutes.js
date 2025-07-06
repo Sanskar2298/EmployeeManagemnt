@@ -22,14 +22,14 @@ router.get("/ping", (req, res) => {
 
 
 router.route("/")
-  .post(createTask)   // Create a new task
+  .post(createTask)   
   .get(getTasks);
-// Get all tasks
+
 router.get("/my", getMyTasks);
-// Route: /api/tasks/:id
+
 router.route("/:id")
-  .get(getTaskById)   // Get single task by ID
-  .put(updateTask)    // Update task
-  .delete(deleteTask);// Delete task
+  .get(getTaskById)   
+  .put(updateTask)    
+  .delete(deleteTask);
 
 export default router;

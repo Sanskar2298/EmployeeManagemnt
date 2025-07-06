@@ -47,7 +47,7 @@ const Login = ({ handleLogin }) => {
             Log in
           </button>
 
-          {/* Link to Signup page */}
+         
           <Link
             to="/signup"
             className="text-emerald-400 underline hover:text-emerald-300"

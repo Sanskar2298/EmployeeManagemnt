@@ -1,6 +1,6 @@
 import User from "../models/UserModel.js";
 
-// Create an employee (called during signup, so optional)
+
 export const createEmployee = async (req, res) => {
   try {
     const { fullName, username, password, position } = req.body;
@@ -29,10 +29,10 @@ export const createEmployee = async (req, res) => {
   }
 };
 
-// ✅ Get all employees (Main culprit for your 500 error)
+
 export const getEmployees = async (req, res) => {
   try {
-    const employees = await User.find({ role: "employee" }); // Only users with employee role
+    const employees = await User.find({ role: "employee" }); 
     res.status(200).json({ employees });
   } catch (err) {
     console.error("Get employees error:", err.message);
@@ -40,7 +40,7 @@ export const getEmployees = async (req, res) => {
   }
 };
 
-// Get single employee by ID
+
 export const getEmployeeById = async (req, res) => {
   try {
     const employee = await User.findById(req.params.id);
@@ -54,7 +54,7 @@ export const getEmployeeById = async (req, res) => {
   }
 };
 
-// Update employee
+
 export const updateEmployee = async (req, res) => {
   try {
     const { fullName, position } = req.body;
@@ -76,7 +76,7 @@ export const updateEmployee = async (req, res) => {
   }
 };
 
-// Delete employee
+
 export const deleteEmployee = async (req, res) => {
   try {
     const employee = await User.findByIdAndDelete(req.params.id);

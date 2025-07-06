@@ -38,7 +38,7 @@ function AppRoutes({ userRole, userInfo, allTasks, setUserRole, setUserInfo, set
       });
       setAllTasks(taskRes.data.tasks);
 
-      // Navigate to dashboard without page reload
+      
       navigate(user.role === 'admin' ? '/admin/dashboard' : '/employee/dashboard');
 
     } catch (err) {

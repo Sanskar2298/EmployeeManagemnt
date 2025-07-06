@@ -7,12 +7,12 @@ const AuthProvider = ({ children }) => {
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
-    // Only set localStorage once if not already present
+   
     if (!localStorage.getItem('employee') || !localStorage.getItem('admin')) {
       setLocalStorage();
     }
 
-    // Then get data from localStorage
+    
     const { employees} = getLocalStorage() || {};
     setUserData( employees);
 

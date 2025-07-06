@@ -35,7 +35,7 @@ const Signup = () => {
       );
 
       alert('Signup successful!');
-      navigate('/'); // Redirect to login
+      navigate('/');
     } catch (err) {
       alert(err.response?.data?.error || 'Signup failed');
     }

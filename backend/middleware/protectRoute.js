@@ -1,6 +1,6 @@
-// middleware/protectRoute.js
+
 import jwt from "jsonwebtoken";
-import User from "../models/UserModel.js"; // adjust if path differs
+import User from "../models/UserModel.js"; 
 
 const protectRoute = async (req, res, next) => {
   try {
@@ -25,4 +25,4 @@ const protectRoute = async (req, res, next) => {
   }
 };
 
-export default protectRoute; // ✅ must come **after** function definition
+export default protectRoute; 

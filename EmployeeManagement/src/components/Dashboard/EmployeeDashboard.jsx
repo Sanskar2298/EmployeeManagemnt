@@ -7,7 +7,7 @@ import axios from 'axios';
 const EmployeeDashboard = (props) => {
   const [tasks, setTasks] = useState([]);
 
-  // Fetch tasks assigned to the logged-in employee
+ 
   const fetchTasks = async () => {
   try {
     const res = await axios.get('http://localhost:3000/api/tasks/my', {

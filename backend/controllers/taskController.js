@@ -1,6 +1,6 @@
 import Task from "../models/TaskModel.js";
 import User from "../models/UserModel.js";
-// Create a new task
+
 export const createTask = async (req, res) => {
   try {
     console.log("✅ Create Task Hit");
@@ -17,7 +17,7 @@ export const createTask = async (req, res) => {
 
     res.status(201).json({ message: "Task created", task });
   } catch (err) {
-    // 👇 Print full error in terminal AND send it in the response
+    
     console.error("❌ Create task error:", err);
     res.status(500).json({
       error: "Server error",
@@ -28,7 +28,7 @@ export const createTask = async (req, res) => {
 };
 
 
-// Get all tasks
+
 export const getTasks = async (req, res) => {
   try {
     const tasks = await Task.find().populate("assignedTo");
@@ -39,7 +39,7 @@ export const getTasks = async (req, res) => {
   }
 };
 
-// Get single task
+
 export const getTaskById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -52,10 +52,10 @@ export const getTaskById = async (req, res) => {
   }
 };
 
-// Get tasks assigned to the currently logged-in user
+
 export const getMyTasks = async (req, res) => {
   try {
-    const userId = req.user._id; // this comes from the protectRoute middleware
+    const userId = req.user._id; 
     const tasks = await Task.find({ assignedTo: userId }).populate("assignedTo");
 
     res.status(200).json({ tasks });
@@ -66,7 +66,7 @@ export const getMyTasks = async (req, res) => {
 };
 
 
-// Update a task
+
 export const updateTask = async (req, res) => {
   try {
     const { id } = req.params;
@@ -82,7 +82,7 @@ export const updateTask = async (req, res) => {
   }
 };
 
-// Delete a task
+
 export const deleteTask = async (req, res) => {
   try {
     const { id } = req.params;
