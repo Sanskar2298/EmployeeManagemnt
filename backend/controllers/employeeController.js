@@ -1,36 +1,38 @@
-// controllers/employeeController.js
-import Employee from "../models/EmployeeModel.js"
+import User from "../models/UserModel.js";
 
-// Create a new employee
+// Create an employee (called during signup, so optional)
 export const createEmployee = async (req, res) => {
   try {
-    const { fullName, email, position } = req.body;
+    const { fullName, username, password, position } = req.body;
 
-    // Check for required fields
-    if (!fullName || !email || !position) {
-      return res.status(400).json({ error: "All fields are required" });
+    const existingUser = await User.findOne({ username });
+    if (existingUser) {
+      return res.status(400).json({ error: "Username already exists" });
     }
 
-    // Prevent duplicate emails
-    const existing = await Employee.findOne({ email });
-    if (existing) {
-      return res.status(400).json({ error: "Email already in use" });
-    }
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    const employee = new Employee({ fullName, email, position });
-    await employee.save();
+    const newEmployee = new User({
+      fullName,
+      username,
+      password: hashedPassword,
+      role: "employee",
+      position,
+    });
 
-    res.status(201).json({ message: "Employee created", employee });
+    await newEmployee.save();
+
+    res.status(201).json({ message: "Employee created successfully" });
   } catch (err) {
     console.error("Create employee error:", err.message);
     res.status(500).json({ error: "Server error" });
   }
 };
 
-// Get all employees
+// ✅ Get all employees (Main culprit for your 500 error)
 export const getEmployees = async (req, res) => {
   try {
-    const employees = await Employee.find().populate("tasks");
+    const employees = await User.find({ role: "employee" }); // Only users with employee role
     res.status(200).json({ employees });
   } catch (err) {
     console.error("Get employees error:", err.message);
@@ -41,43 +43,47 @@ export const getEmployees = async (req, res) => {
 // Get single employee by ID
 export const getEmployeeById = async (req, res) => {
   try {
-    const { id } = req.params;
-    const employee = await Employee.findById(id).populate("tasks");
-    if (!employee) {
+    const employee = await User.findById(req.params.id);
+    if (!employee || employee.role !== "employee") {
       return res.status(404).json({ error: "Employee not found" });
     }
     res.status(200).json({ employee });
   } catch (err) {
-    console.error("Get employee error:", err.message);
+    console.error("Get employee by ID error:", err.message);
     res.status(500).json({ error: "Server error" });
   }
 };
 
-// Update an employee
+// Update employee
 export const updateEmployee = async (req, res) => {
   try {
-    const { id } = req.params;
-    const updates = req.body;
-    const employee = await Employee.findByIdAndUpdate(id, updates, { new: true });
-    if (!employee) {
+    const { fullName, position } = req.body;
+
+    const updatedEmployee = await User.findByIdAndUpdate(
+      req.params.id,
+      { fullName, position },
+      { new: true }
+    );
+
+    if (!updatedEmployee || updatedEmployee.role !== "employee") {
       return res.status(404).json({ error: "Employee not found" });
     }
-    res.status(200).json({ message: "Employee updated", employee });
+
+    res.status(200).json({ message: "Employee updated", employee: updatedEmployee });
   } catch (err) {
     console.error("Update employee error:", err.message);
     res.status(500).json({ error: "Server error" });
   }
 };
 
-// Delete an employee
+// Delete employee
 export const deleteEmployee = async (req, res) => {
   try {
-    const { id } = req.params;
-    const employee = await Employee.findByIdAndDelete(id);
-    if (!employee) {
+    const employee = await User.findByIdAndDelete(req.params.id);
+    if (!employee || employee.role !== "employee") {
       return res.status(404).json({ error: "Employee not found" });
     }
-    res.status(200).json({ message: "Employee deleted" });
+    res.status(200).json({ message: "Employee deleted successfully" });
   } catch (err) {
     console.error("Delete employee error:", err.message);
     res.status(500).json({ error: "Server error" });

@@ -1,70 +1,120 @@
-
-import React, { useContext, useEffect,useState} from 'react';
-import Login from './components/Auth/Login'
+import React, { useEffect, useState } from 'react';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+} from 'react-router-dom';
+import Login from './components/Auth/Login';
+import Signup from './components/Auth/Signup';
 import EmployeeDashboard from './components/Dashboard/EmployeeDashboard';
 import AdminDashboard from './components/Dashboard/AdminDashboard';
-import { setLocalStorage } from './utils/LocalStorage';
-import { AuthContext } from './context/AuthProvider';
+import axios from 'axios';
 
+function AppRoutes({ userRole, userInfo, allTasks, setUserRole, setUserInfo, setAllTasks }) {
+  const navigate = useNavigate();
+
+  const handleLogin = async (email, password) => {
+    try {
+      const res = await axios.post(
+        'http://localhost:3000/api/auth/login',
+        {
+          username: email,
+          password,
+        },
+        { withCredentials: true }
+      );
+
+      const { user } = res.data;
+      console.log("LOGIN RESPONSE USER:", user);
+      setUserRole(user.role);
+      setUserInfo(user);
+
+      localStorage.setItem('loggedInUser', JSON.stringify({ role: user.role, user }));
+
+      const taskRes = await axios.get("http://localhost:3000/api/tasks", {
+        withCredentials: true,
+      });
+      setAllTasks(taskRes.data.tasks);
+
+      // Navigate to dashboard without page reload
+      navigate(user.role === 'admin' ? '/admin/dashboard' : '/employee/dashboard');
+
+    } catch (err) {
+      alert(err.response?.data?.error || 'Login failed');
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('loggedInUser');
+    setUserRole(null);
+    setUserInfo(null);
+    navigate('/');
+  };
+
+  return (
+    <Routes>
+      <Route
+        path="/"
+        element={<Login handleLogin={handleLogin} />}
+      />
+      <Route
+        path="/signup"
+        element={<Signup />}
+      />
+      <Route
+        path="/admin/dashboard"
+        element={
+          userRole === 'admin' ? (
+            <AdminDashboard changeUser={handleLogout} data={userInfo} tasks={allTasks} />
+          ) : (
+            <Navigate to="/" />
+          )
+        }
+      />
+      <Route
+        path="/employee/dashboard"
+        element={
+          userRole === 'employee' ? (
+            <EmployeeDashboard
+              changeUser={handleLogout}
+              data={userInfo}
+              tasks={allTasks.filter(task => task.assignedTo?._id === userInfo._id)}
+            />
+          ) : (
+            <Navigate to="/" />
+          )
+        }
+      />
+    </Routes>
+  );
+}
 
 export default function App() {
+  const [userRole, setUserRole] = useState(null);
+  const [userInfo, setUserInfo] = useState(null);
+  const [allTasks, setAllTasks] = useState([]);
 
-  const [user,setUser]= useState(null)
-  const [loggedInUserData,setloggedInUserData] = useState(null)
-  const [userData,setUserData] = useContext(AuthContext)
-  
-useEffect(()=>{
-const loggedInUser = localStorage.getItem('loggedInUser')
+  useEffect(() => {
+    const stored = localStorage.getItem('loggedInUser');
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      setUserRole(parsed.role);
+      setUserInfo(parsed.user);
+    }
+  }, []);
 
-if(loggedInUser){
-const userData = JSON.parse(loggedInUser)
-setUser(userData.role)
-setloggedInUserData(userData.data)
-}
-},[])
-
-
-
-
-
-useEffect(() => {
-  if (!localStorage.getItem('employee') || !localStorage.getItem('admin')) {
-    setLocalStorage();
-  }
-}, []);
-
-
-  
-const handleLogin = (email,password)=> {
-if(email=== 'admin@example.com' && password === '123'){
-  setUser('admin')
-  const adminData = { email, password };
-  setloggedInUserData(adminData)
-  localStorage.setItem('loggedInUser',JSON.stringify({role:'admin'}))
-}else if(userData)
-  {
-    const employee =  userData.find((e)=>email == e.email && e.password == password )
-if(employee){
-  setUser('employee')
-  setloggedInUserData(employee)
-  localStorage.setItem('loggedInUser',JSON.stringify({role:'employee',data:employee}))
-}
-  
-}
-else{
-  alert("Invalid Credentials")
-}
-}
-
-const data = useContext(AuthContext)
-console.log(data)
   return (
-  <>
-   
-    {!user && <Login handleLogin={handleLogin} />}
-    {user === 'admin' && <AdminDashboard changeUser={setUser} data={loggedInUserData} />}
-    {user === 'employee' && <EmployeeDashboard changeUser={setUser} data={loggedInUserData} />}
-  
-  </>
-);
+    <Router>
+      <AppRoutes
+        userRole={userRole}
+        userInfo={userInfo}
+        allTasks={allTasks}
+        setUserRole={setUserRole}
+        setUserInfo={setUserInfo}
+        setAllTasks={setAllTasks}
+      />
+    </Router>
+  );
 }

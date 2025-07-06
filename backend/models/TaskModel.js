@@ -9,12 +9,14 @@ const taskSchema = new mongoose.Schema({
   description: String,
   status: {
     type: String,
-    enum: ['pending', 'active', 'completed'],
-    default: 'pending',
+    enum: ['active', 'completed', 'failed', 'newtask'],
+    default: 'newtask',
   },
+  dueDate: Date,
   assignedTo: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Employee',
+    ref: 'User',
+    required: true,
   },
 }, { timestamps: true });
 

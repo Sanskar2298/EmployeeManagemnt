@@ -1,23 +1,32 @@
 import Task from "../models/TaskModel.js";
-
+import User from "../models/UserModel.js";
 // Create a new task
 export const createTask = async (req, res) => {
   try {
-    const { title, description, status, assignedTo, dueDate } = req.body;
+    console.log("✅ Create Task Hit");
+    console.log("📝 Request Body:", req.body);
+
+    const { title, description, assignedTo, dueDate } = req.body;
 
     if (!title || !assignedTo) {
       return res.status(400).json({ error: "Title and assignedTo are required" });
     }
 
-    const task = new Task({ title, description, status, assignedTo, dueDate });
+    const task = new Task({ title, description, assignedTo, dueDate });
     await task.save();
 
     res.status(201).json({ message: "Task created", task });
   } catch (err) {
-    console.error("Create task error:", err.message);
-    res.status(500).json({ error: "Server error" });
+    // 👇 Print full error in terminal AND send it in the response
+    console.error("❌ Create task error:", err);
+    res.status(500).json({
+      error: "Server error",
+      message: err.message,
+      stack: err.stack,
+    });
   }
 };
+
 
 // Get all tasks
 export const getTasks = async (req, res) => {
@@ -42,6 +51,20 @@ export const getTaskById = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
+
+// Get tasks assigned to the currently logged-in user
+export const getMyTasks = async (req, res) => {
+  try {
+    const userId = req.user._id; // this comes from the protectRoute middleware
+    const tasks = await Task.find({ assignedTo: userId }).populate("assignedTo");
+
+    res.status(200).json({ tasks });
+  } catch (err) {
+    console.error("Get my tasks error:", err.message);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
 
 // Update a task
 export const updateTask = async (req, res) => {

@@ -1,156 +1,92 @@
-import React from 'react'
-import { useState } from 'react'
-import { AuthContext } from '../../context/AuthProvider'
-import { useContext } from 'react'
-const CreateTask = () => {
+import React from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
-  const[userData,setUserData] = useContext(AuthContext)
+const CreateTask = ({ onTaskCreated }) => {
+  const [form, setForm] = useState({
+    title: "",
+    description: "",
+    assignedTo: "",
+    dueDate: "",
+  });
 
-const [taskTitle,setTaskTitle] = useState('')
-const [taskDate,setTaskDate] = useState('')
-const[taskDescription,setTaskDescription]= useState('')
-const[assignTo,setAssignTo]=useState('')
-const[category,setCategory]= useState('')
+  const [employees, setEmployees] = useState([]);
 
-const[newtask,setNewTask] = useState({})
-const submitHandler = (e) => {
-e.preventDefault()
+  useEffect(() => {
+    fetchEmployees();
+  }, []);
 
-setNewTask({taskTitle,taskDescription,taskDate,category,active:false,newTask:true,failed:false,completed:false})
+  const fetchEmployees = async () => {
+    try {
+      const res = await axios.get("http://localhost:3000/api/employees", {
+        withCredentials: true,
+      });
+      setEmployees(res.data.employees);
+    } catch (err) {
+      console.error("Error fetching employees:", err);
+    }
+  };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post("http://localhost:3000/api/tasks", form, {
+        withCredentials: true,
+      });
+      alert("Task created!");
+      onTaskCreated && onTaskCreated(res.data.task);
+      setForm({ title: "", description: "", assignedTo: "", dueDate: "" });
+    } catch (err) {
+      console.error("Create task error:", err.response?.data?.error);
+    }
+  };
 
-
-
-
-const data = userData
-
-
-
-data.forEach(function(elem){
-if(assignTo==elem.firstName){
-elem.tasks.push(newTask)
-elem.taskStats.newTask=elem.taskStats.newTask +1  
-}
-
-})
-setUserData(data)
-
-
-
-
-localStorage.setItem('employees',JSON.stringify(data))
-
-
-
-setTaskDate("")
-setAssignTo('')
-setCategory('')
-setTaskDescription('')
-setTaskTitle('')
-
-
-
-}
-
-
-
-
-
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
 
   return (
-    <div>
-      <div> 
+    <form onSubmit={handleSubmit} className="space-y-4 p-4 border rounded-md">
+      <input
+        name="title"
+        value={form.title}
+        onChange={handleChange}
+        placeholder="Task title"
+        required
+        className="border p-2 w-full"
+      />
+      <textarea
+        name="description"
+        value={form.description}
+        onChange={handleChange}
+        placeholder="Task description"
+        className="border p-2 w-full"
+      />
+      <select
+        name="assignedTo"
+        value={form.assignedTo}
+        onChange={handleChange}
+        required
+        className="border p-2 w-full bg-[#1c1c1c]"
+      >
+        <option value="">Select employee</option>
+        {employees.map((emp) => (
+          <option key={emp._id} value={emp._id}>
+            {emp.fullName}
+          </option>
+        ))}
+      </select>
+      <input
+        name="dueDate"
+        type="date"
+        value={form.dueDate}
+        onChange={handleChange}
+        className="border p-2 w-full"
+      />
+      <button type="submit" className="bg-pink-600 text-white px-4 py-2 rounded">
+        Create Task
+      </button>
+    </form>
+  );
+};
 
-<form onSubmit = {(e)=>{
-submitHandler(e)
-}
-}
-
-className = 'flex items-start justify-between w-full flex-wrap'>
-    <div className='w-1/2'>
-        <div>
-<h3 className = 'text-sm text-gray-300 mb-0.5'> Task Title </h3>
-<input
-value = {taskTitle}
-onChange = {(e)=>{
-  setTaskTitle(e.target.value)
-}}
- className= 'text-sm py-1 px-2 w-4/5 rounded outline-none bg-transparent border-[1px]'
-type="text" placeholder = "Make a UI Design"></input>
-
-<div >
-<h3 className = 'text-sm text-gray-300 mb-0.5'>Date </h3>
-<input
-value = {taskDate}
-onChange = {(e)=>{
-  setTaskDate(e.target.value)
-}}
-
-
-
-
-
-className= 'text-sm py-1 px-2 w-4/5 rounded outline-none bg-transparent border-[1px]' type = "date"/>
-</div>
-
-<div>
-<h3 className = 'text-sm text-gray-300 mb-0.5'> Assign To </h3>
-<input
-value = {assignTo}
-onChange = {(e)=>{
-  setAssignTo(e.target.value)
-}}
-
-
-
-className= 'text-sm py-1 px-2 w-4/5 rounded outline-none bg-transparent border-[1px]' type = "text" placeholder = 'Employee Name'/>
-</div>
-
-<div>
-<h3 className = 'text-sm text-gray-300 mb-0.5' >Category</h3>
-
-<input
-value = {category}
-onChange = {(e)=>{
-  setCategory(e.target.value)
-}}
-
-
-
-
-
-className= 'text-sm py-1 px-2 w-4/5 rounded outline-none bg-transparent border-[1px]' type = "text" placeholder = 'design,dev,etc'/>
-</div>
-
-    </div>
-    
-</div>
-
-<div className='w-2/5 flex flex-col items-start'>
-<h3 className='text-sm text-gray-300 mb-0.5'> Description </h3>
-<textarea
-value = {taskDescription}
-onChange = {(e)=>{
-  setTaskDescription(e.target.value)
-}}
-
-
-
-
-className = 'w-full h-44 text-sm py-2 px-4 rounded outline-none bg-transparent border-[1]px] border-gray-400 '
-name="" id= "" cols="30"rows="10"></textarea>
-</div>
-
-
-
-<button className = 'bg-emerald-500 py-3 hover;bg-emerald-600 px-5 rounded text-sm mt-4 w-full'>Create Task </button>
-
-</form>
-
-</div>
-
-    </div>
-  )
-}
-
-export default CreateTask
+export default CreateTask;
