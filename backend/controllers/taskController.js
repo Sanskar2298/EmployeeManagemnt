@@ -12,12 +12,12 @@ export const createTask = async (req, res) => {
       return res.status(400).json({ error: "Title and assignedTo are required" });
     }
 
-    const task = new Task({ title, description, assignedTo, dueDate });
+    const task = new Task({ title, description, assignedTo: mongoose.Types.ObjectId(assignedTo), dueDate });
     await task.save();
 
     res.status(201).json({ message: "Task created", task });
   } catch (err) {
-    
+
     console.error("❌ Create task error:", err);
     res.status(500).json({
       error: "Server error",
@@ -55,15 +55,19 @@ export const getTaskById = async (req, res) => {
 
 export const getMyTasks = async (req, res) => {
   try {
-    const userId = req.user._id; 
+    const userId = req.user._id;
+    console.log("🔐 Logged-in employee ID:", userId);
+
     const tasks = await Task.find({ assignedTo: userId }).populate("assignedTo");
 
+    console.log("📦 Tasks found:", tasks.length);
     res.status(200).json({ tasks });
   } catch (err) {
     console.error("Get my tasks error:", err.message);
     res.status(500).json({ error: "Server error" });
   }
 };
+
 
 
 

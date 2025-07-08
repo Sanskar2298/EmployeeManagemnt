@@ -6,11 +6,13 @@ import {
   Navigate,
   useNavigate,
 } from 'react-router-dom';
+import axios from 'axios';
+
+import HomePage from './pages/HomePage'; // ✅ landing page
 import Login from './components/Auth/Login';
 import Signup from './components/Auth/Signup';
 import EmployeeDashboard from './components/Dashboard/EmployeeDashboard';
 import AdminDashboard from './components/Dashboard/AdminDashboard';
-import axios from 'axios';
 
 function AppRoutes({ userRole, userInfo, allTasks, setUserRole, setUserInfo, setAllTasks }) {
   const navigate = useNavigate();
@@ -27,7 +29,6 @@ function AppRoutes({ userRole, userInfo, allTasks, setUserRole, setUserInfo, set
       );
 
       const { user } = res.data;
-      console.log("LOGIN RESPONSE USER:", user);
       setUserRole(user.role);
       setUserInfo(user);
 
@@ -38,7 +39,6 @@ function AppRoutes({ userRole, userInfo, allTasks, setUserRole, setUserInfo, set
       });
       setAllTasks(taskRes.data.tasks);
 
-      
       navigate(user.role === 'admin' ? '/admin/dashboard' : '/employee/dashboard');
 
     } catch (err) {
@@ -55,14 +55,9 @@ function AppRoutes({ userRole, userInfo, allTasks, setUserRole, setUserInfo, set
 
   return (
     <Routes>
-      <Route
-        path="/"
-        element={<Login handleLogin={handleLogin} />}
-      />
-      <Route
-        path="/signup"
-        element={<Signup />}
-      />
+      <Route path="/" element={<HomePage />} /> {/* ✅ Landing page */}
+      <Route path="/login" element={<Login handleLogin={handleLogin} />} />
+      <Route path="/signup" element={<Signup />} />
       <Route
         path="/admin/dashboard"
         element={

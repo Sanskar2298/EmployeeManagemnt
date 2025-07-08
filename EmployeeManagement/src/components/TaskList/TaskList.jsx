@@ -15,6 +15,8 @@ function TaskList({ data }) {
       className="h-[55%] overflow-x-auto flex items-center justify-start gap-5 flex-nowrap w-full py-5 mt-10"
     >
       {data.tasks.map((task, idx) => {
+        console.log(`Rendering Task ${idx}: status="${task.status}"`);
+
         switch (task.status?.toLowerCase()) {
           case 'newtask':
             return <NewTask key={idx} data={task} onStatusChange={data.refreshTasks} />;

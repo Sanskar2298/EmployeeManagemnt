@@ -28,6 +28,8 @@ const CreateTask = ({ onTaskCreated }) => {
   };
 
   const handleSubmit = async (e) => {
+    console.log("📤 Submitting task with:", form);
+
     e.preventDefault();
     try {
       const res = await axios.post("http://localhost:3000/api/tasks", form, {
