@@ -2,6 +2,10 @@ import React from "react"
 import Squares from "../components/Particles/Squares"
 import TextPressure from "../components/TextPressure/TestPressure";
 import image from "../assets/insta.png"
+import linkedin from "../assets/linkedin.png"
+import github from "../assets/github.png"
+import x from "../assets/xlogo.png"
+
 
 export default function HomePage() {
   return (
@@ -71,12 +75,11 @@ export default function HomePage() {
         <main className="container mx-auto px-6 py-20 text-center">
 
 
- <h1 className="text-7xl font-light mb-8 leading-tight">
-            Employee
+          <h1 className="text-7xl font-light mb-8 leading-tight">
+            Personnel
             <br />
             <span className="font-semibold">Management  </span>
           </h1>
-
 
 
 
@@ -115,15 +118,51 @@ export default function HomePage() {
 
         <footer className="border-t border-emerald-500 mt-20">
           <div className="container mx-auto px-6 py-8">
-            <div className="flex justify-between items-center">
-              <div className="text-gray-400">Follow us
-                <a href="https://www.instagram.com/sanssskarr?igsh=b2owNDJhbGwyeHNt" target="_blank">
-                  <img src={image} alt="Instagram" className="w-8 h-8np" />
+            <div className="grid grid-cols-3 items-center text-center">
+             
+             <div className="text-left text-gray-400"></div>
+
+
+              <div className="flex justify-center space-x-6">
+                <a
+                  href="https://www.linkedin.com/in/sanskar-srivastava-9986b030b/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img src={linkedin} alt="LinkedIn" className="w-8 h-8" />
                 </a>
-              </div>
-              <div className="flex space-x-6">
+                <a
+                  href="https://www.instagram.com/sanssskarr?igsh=b2owNDJhbGwyeHNt"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img src={image} alt="Instagram" className="w-8 h-8" />
+                </a>
+
+                <a
+                  href="https://x.com/38_sanskar"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img src={github} alt="Github" className="w-8 h-8" />
+                </a>
+
+
+<a
+                  href="https://github.com/Sanskar2298"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img src={x} alt="Twitter" className="w-8 h-8" />
+                </a>
+
+
+
 
               </div>
+
+
+
             </div>
           </div>
         </footer>
