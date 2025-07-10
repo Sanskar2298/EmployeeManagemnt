@@ -4,20 +4,28 @@ import User from "../models/UserModel.js";
 export const createTask = async (req, res) => {
   try {
     console.log("✅ Create Task Hit");
-    console.log("📝 Request Body:", req.body);
-
     const { title, description, assignedTo, dueDate } = req.body;
 
     if (!title || !assignedTo) {
       return res.status(400).json({ error: "Title and assignedTo are required" });
     }
 
-    const task = new Task({ title, description, assignedTo: mongoose.Types.ObjectId(assignedTo), dueDate });
-    await task.save();
+    // ✅ Check if assigned user exists
+    const assignedUser = await User.findById(assignedTo);
+    if (!assignedUser) {
+      return res.status(400).json({ error: "Assigned user does not exist" });
+    }
 
+    const task = new Task({
+      title,
+      description,
+      assignedTo,
+      dueDate,
+    });
+
+    await task.save();
     res.status(201).json({ message: "Task created", task });
   } catch (err) {
-
     console.error("❌ Create task error:", err);
     res.status(500).json({
       error: "Server error",
@@ -26,7 +34,6 @@ export const createTask = async (req, res) => {
     });
   }
 };
-
 
 
 export const getTasks = async (req, res) => {
